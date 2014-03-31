@@ -21,6 +21,8 @@
 		66692D1518E923C200FB49F4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66692CF718E923C200FB49F4 /* UIKit.framework */; };
 		66692D1D18E923C200FB49F4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66692D1B18E923C200FB49F4 /* InfoPlist.strings */; };
 		66692D1F18E923C200FB49F4 /* AHSegmentedSliderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66692D1E18E923C200FB49F4 /* AHSegmentedSliderTests.m */; };
+		66692D2A18E9241300FB49F4 /* AHSegmentedSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 66692D2918E9241300FB49F4 /* AHSegmentedSlider.m */; };
+		66692D2C18E94E2500FB49F4 /* SliderImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 66692D2B18E94E2500FB49F4 /* SliderImage@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,9 @@
 		66692D1A18E923C200FB49F4 /* AHSegmentedSliderTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AHSegmentedSliderTests-Info.plist"; sourceTree = "<group>"; };
 		66692D1C18E923C200FB49F4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		66692D1E18E923C200FB49F4 /* AHSegmentedSliderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AHSegmentedSliderTests.m; sourceTree = "<group>"; };
+		66692D2818E9241300FB49F4 /* AHSegmentedSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AHSegmentedSlider.h; sourceTree = "<group>"; };
+		66692D2918E9241300FB49F4 /* AHSegmentedSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AHSegmentedSlider.m; sourceTree = "<group>"; };
+		66692D2B18E94E2500FB49F4 /* SliderImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SliderImage@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +122,9 @@
 				66692D0518E923C200FB49F4 /* Main.storyboard */,
 				66692D0818E923C200FB49F4 /* ViewController.h */,
 				66692D0918E923C200FB49F4 /* ViewController.m */,
+				66692D2818E9241300FB49F4 /* AHSegmentedSlider.h */,
+				66692D2B18E94E2500FB49F4 /* SliderImage@2x.png */,
+				66692D2918E9241300FB49F4 /* AHSegmentedSlider.m */,
 				66692D0B18E923C200FB49F4 /* Images.xcassets */,
 				66692CFA18E923C200FB49F4 /* Supporting Files */,
 			);
@@ -229,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66692D0C18E923C200FB49F4 /* Images.xcassets in Resources */,
+				66692D2C18E94E2500FB49F4 /* SliderImage@2x.png in Resources */,
 				66692CFE18E923C200FB49F4 /* InfoPlist.strings in Resources */,
 				66692D0718E923C200FB49F4 /* Main.storyboard in Resources */,
 			);
@@ -251,6 +260,7 @@
 			files = (
 				66692D0A18E923C200FB49F4 /* ViewController.m in Sources */,
 				66692D0418E923C200FB49F4 /* AppDelegate.m in Sources */,
+				66692D2A18E9241300FB49F4 /* AHSegmentedSlider.m in Sources */,
 				66692D0018E923C200FB49F4 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

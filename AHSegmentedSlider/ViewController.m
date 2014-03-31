@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "AHSegmentedSlider.h"
 @interface ViewController ()
 
 @end
@@ -17,7 +17,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	AHSegmentedSlider *slider = [[AHSegmentedSlider alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 100)];
+    [slider setNumberOfPoints:6];
+    [slider setLeftColor:[UIColor greenColor]];
+    [slider setRightColor:[UIColor redColor]];
+    [slider setLineColor:[UIColor blackColor]];
+    
+    [slider setBackgroundColor:[UIColor darkGrayColor]];
+    [slider setMarginInset:20];
+    [slider setLineWidth:2];
+    [slider setCircleRadius:10];
+    
+    [self.view addSubview:slider];
+    
+    self.view.backgroundColor = [UIColor grayColor];
 }
 
 - (void)didReceiveMemoryWarning
