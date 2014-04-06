@@ -30,100 +30,124 @@
     self = [super initWithFrame:frame];
     if (self) {
         _thumbImageView = [[UIImageView alloc] init];
-        
-        
-        
         _nodePoints = [NSMutableArray new];
+        _marginInset = 0;
+        _visibleNodes = NO;
+        [self setNumberOfPoints:2];
+
+
+        _gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        _gestureRecognizer.delegate = self;
+        _gestureRecognizer.minimumPressDuration = 0.0;
+        _gestureRecognizer.numberOfTouchesRequired = 1;
+        
+        UIImage *sliderImage = [UIImage imageNamed:@"SliderImage"];
+        
+        _thumbImageView = [UIImageView new];
+        [_thumbImageView setImage:sliderImage];
+        [_thumbImageView setFrame:CGRectMake(_marginInset, 0, sliderImage.size.width, sliderImage.size.height)];
+        [_thumbImageView setUserInteractionEnabled:YES];
+        [_thumbImageView addGestureRecognizer:_gestureRecognizer];
+        [self addSubview:_thumbImageView];
+        
+        [self drawEachNode];
+        
     }
     return self;
 }
 
 
 
+
+
 - (void)drawRect:(CGRect)rect
 {
-
+    
     // Draw Baseline
     
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetStrokeColorWithColor(context, _lineColor.CGColor);
+    CGContextRef barLineContext = UIGraphicsGetCurrentContext();
+    CGContextSetStrokeColorWithColor(barLineContext, _barColor.CGColor);
     
     // Draw them with a 2.0 stroke width so they are a bit more visible.
-    CGContextSetLineWidth(context, _lineWidth);
-    
-    CGContextMoveToPoint(context ,_marginInset, (self.bounds.size.height / 2) + (_lineWidth / 2)); //start at this point
-    
-    CGContextAddLineToPoint(context, self.frame.size.width - _marginInset, (self.bounds.size.height / 2)); //draw to this point
+    CGContextSetLineWidth(barLineContext, _baseLineWidth);
+    CGContextMoveToPoint(barLineContext ,_marginInset, (self.bounds.size.height / 2)); //start at this point
+    CGContextAddLineToPoint(barLineContext, self.frame.size.width - _marginInset, (self.bounds.size.height / 2)); //draw to this point
     
     // and now draw the Path!
-    CGContextStrokePath(context);
+    CGContextStrokePath(barLineContext);
     
-    // Draw Nodes
-    _spaceBetweenPoints = (self.frame.size.width - (_marginInset * 2)) / (_numberOfPoints - 1);
-    CGPoint centerPoint;
-    NSLog(@"%f", _spaceBetweenPoints);
-    for (int i = 0; i < _numberOfPoints; i++) {
-        
-        centerPoint = CGPointMake(_marginInset + (_spaceBetweenPoints) * i, (self.bounds.size.height / 2));
-        
-        CGContextRef circleContext = UIGraphicsGetCurrentContext();
-        
-        CGContextAddEllipseInRect(circleContext, CGRectMake(-_circleRadius + centerPoint.x,
-                                                            -_circleRadius + centerPoint.y ,
-                                                            _circleRadius * 2, _circleRadius * 2));
-        
-        CGContextSetFillColor(circleContext, CGColorGetComponents([[UIColor redColor] CGColor]));
-        
-        CGContextFillPath(circleContext);
-        
-        [_nodePoints addObject:[NSValue valueWithCGPoint:centerPoint]];
-        NSLog(@"%f, %f", centerPoint.x, centerPoint.y);
-    }
+
+    // Draw Left Line
+    CGContextRef baseLineContext = UIGraphicsGetCurrentContext();
+    CGContextSetStrokeColorWithColor(baseLineContext, _baseColor.CGColor);
     
-    [self updateSlider];
+    CGContextSetLineWidth(baseLineContext, _barLineWidth);
+    CGContextMoveToPoint(baseLineContext ,_marginInset, (self.bounds.size.height / 2)); //start at this point
+    CGContextAddLineToPoint(baseLineContext, _thumbImageView.center.x, (self.bounds.size.height / 2));
+    
+    CGContextStrokePath(baseLineContext);
+    
+    [self drawEachNode];
     
 }
 
+- (void)drawEachNode
+{
+    if (_visibleNodes)
+    {
+        for (int i = 0; i < _numberOfPoints; i++) {
+            
+            
+            
+            float newRadius;
+            UIColor *newColor;
+            
+            if (i <= _currentIndex) {
+                newRadius = _barNodeRadius;
+                newColor = _barNodeColor;
+            } else
+            {
+                newRadius = _baseNodeRadius;
+                newColor = _baseNodeColor;
+            }
+            
+            CGPoint centerPoint = [_nodePoints[i] CGPointValue];
+            
+            centerPoint = CGPointMake(_marginInset + (_spaceBetweenPoints) * i, (self.bounds.size.height / 2));
+            
+            CGContextRef circleContext = UIGraphicsGetCurrentContext();
+            
+            CGContextAddEllipseInRect(circleContext, CGRectMake(-newRadius + centerPoint.x,
+                                                                -newRadius + centerPoint.y ,
+                                                                newRadius * 2, newRadius * 2));
+            
+            CGContextSetFillColorWithColor(circleContext, newColor.CGColor);
+            
+            CGContextFillPath(circleContext);
+            
+        }
+    }
 
+}
 
 #pragma METHODS
 
 - (void)moveToIndex:(int)index
 {
-    
+    [UIView animateWithDuration:0.2 animations:^{
+        _thumbImageView.center = CGPointMake((index * _spaceBetweenPoints) + _marginInset, _thumbImageView.center.y);
+        [self setNeedsDisplay];
+    }];
 }
+
+
 
 - (void)updateSlider
 {
-
-    NSLog(@"Not instant ");
-    UIImage *sliderImage = [UIImage imageNamed:@"SliderImage"];
-    _thumbImageView = [UIImageView new];
-    [_thumbImageView setImage:sliderImage];
-    [_thumbImageView setFrame:CGRectMake(0, 0, sliderImage.size.width, sliderImage.size.height)];
-    CGPoint thumbPoint = [_nodePoints[0] CGPointValue];
-    
-    [_thumbImageView setCenter:CGPointMake(thumbPoint.x , thumbPoint.y)];
-    NSLog(@"IMAGE VIEW");
-    NSLog(@"%f %f", _thumbImageView.frame.origin.x, _thumbImageView.frame.origin.y);
-    NSLog(@"%f %f", thumbPoint.x, thumbPoint.y);
-
-    [self addSubview:_thumbImageView];
-    
-    _thumbImageView.userInteractionEnabled = YES;
-
-    
-    _gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    _gestureRecognizer.delegate = self;
-    _gestureRecognizer.minimumPressDuration = 0.0;
-    _gestureRecognizer.numberOfTouchesRequired = 1;
-
-    
-    [_thumbImageView addGestureRecognizer:_gestureRecognizer];
-
-    
     
 }
+
+
 
 
 #pragma GETTERS
@@ -132,66 +156,12 @@
     return [_nodePoints[index] CGPointValue];
 }
 
-#pragma SETTERS
-
-- (void)setMarginInset:(float)marginInset
+- (NSInteger)getCurrentIndex
 {
-    _marginInset = marginInset;
-    
-    [self setNeedsDisplay];
+    return _currentIndex;
 }
 
-- (void)setNumberOfPoints:(NSInteger)numberOfPoints
-{
-    if (numberOfPoints < 2) {
-        _numberOfPoints = 2;
-    } else
-    {
-        _numberOfPoints = numberOfPoints;
-    }
-    
-    [self setNeedsDisplay];
-}
 
-- (void)setLineWidth:(float)lineWidth
-{
-    if (lineWidth < 1) {
-        _lineWidth = 1;
-    } else
-    {
-        _lineWidth = lineWidth;
-    }
-    
-    [self setNeedsDisplay];
-}
-
-- (void)setLeftColor:(UIColor *)leftColor
-{
-    _leftColor = leftColor;
-    
-    [self setNeedsDisplay];
-}
-
-- (void)setRightColor:(UIColor *)rightColor
-{
-    _rightColor = rightColor;
-    
-    [self setNeedsDisplay];
-}
-
-- (void)setLineColor:(UIColor *)lineColor
-{
-    _lineColor = lineColor;
-    
-    [self setNeedsDisplay];
-}
-
-- (void)setNodeColor:(UIColor *)nodeColor
-{
-    _nodeColor = nodeColor;
-    
-    [self setNeedsDisplay];
-}
 
 #pragma GESTURE
 - (void)handleGesture:(UIGestureRecognizer *)gesture
@@ -199,15 +169,16 @@
     CGPoint touchLocation = [gesture locationInView:self];
 
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        
+        NSLog(@"Began");
     } else if (gesture.state == UIGestureRecognizerStateChanged)
     {
         [self moveSliderToXPoint:touchLocation.x];
+        
     } else if (gesture.state == UIGestureRecognizerStateEnded)
     {
         [self moveToNearestNode];
+        
     }
-    
     
 }
 
@@ -217,7 +188,11 @@
     if (xPoint >= _marginInset && xPoint <= self.bounds.size.width - _marginInset) {
         _thumbImageView.center = CGPointMake(xPoint, _thumbImageView.center.y);
         [self updateIndex];
+        [self setNeedsDisplay];
+        NSLog(@"Move slider to point");
     }
+    
+    
 }
 
 - (void)updateIndex
@@ -227,6 +202,7 @@
         _currentIndex = nextIndex;
         NSLog(@"CURRENT INDEX: %i", _currentIndex);
     }
+    
     
 }
 
@@ -246,15 +222,117 @@
     
     [UIView animateWithDuration:0.2 animations:^{
         _thumbImageView.center = CGPointMake((_currentIndex * _spaceBetweenPoints) + _marginInset, _thumbImageView.center.y);
+        NSLog(@"%f %f", _thumbImageView.center.x, _thumbImageView.center.y);
+        [self setNeedsDisplay];
     }];
     
     
     
 }
 
-- (void)shiftToNode:(int)node
+#pragma SETTERS
+
+- (void)setMarginInset:(float)marginInset
 {
+    _marginInset = marginInset;
+    _thumbImageView.center = CGPointMake(_marginInset, self.bounds.size.height / 2);
     
+    [self setNeedsDisplay];
 }
 
+- (void)setNumberOfPoints:(NSInteger)numberOfPoints
+{
+    if (numberOfPoints < 2) {
+        _numberOfPoints = 2;
+    } else
+    {
+        _numberOfPoints = numberOfPoints;
+    }
+    
+
+    _spaceBetweenPoints = (self.frame.size.width - (_marginInset * 2)) / (_numberOfPoints - 1);
+    CGPoint centerPoint;
+    NSLog(@"%f", _spaceBetweenPoints);
+    
+    [_nodePoints removeAllObjects];
+    
+    for (int i = 0; i < _numberOfPoints; i++) {
+        
+        centerPoint = CGPointMake(_marginInset + (_spaceBetweenPoints) * i, (self.bounds.size.height / 2));
+
+        [_nodePoints addObject:[NSValue valueWithCGPoint:centerPoint]];
+        NSLog(@"%f, %f", centerPoint.x, centerPoint.y);
+    }
+    
+    CGPoint startingPoint = [_nodePoints[0] CGPointValue];
+    [_thumbImageView setCenter:startingPoint];
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBarLineWidth:(float)lineWidth
+{
+    if (lineWidth < 1) {
+        _barLineWidth = 1;
+    } else
+    {
+        _barLineWidth = lineWidth;
+    }
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBaseLineWidth:(float)lineWidth
+{
+    if (lineWidth < 1) {
+        _baseLineWidth = 1;
+    } else
+    {
+        _baseLineWidth = lineWidth;
+    }
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBarColor:(UIColor *)leftColor
+{
+    _barColor = leftColor;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBaseColor:(UIColor *)rightColor
+{
+    _baseColor = rightColor;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBaseNodeColor:(UIColor *)nodeColor
+{
+    _baseNodeColor = nodeColor;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBarNodeColor:(UIColor *)nodeColor
+{
+    _barNodeColor = nodeColor;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBaseNodeRadius:(float)baseNodeRadius
+{
+    _baseNodeRadius = baseNodeRadius;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)setBarNodeRadius:(float)barNodeRadius
+{
+    _barNodeRadius = barNodeRadius;
+    
+    [self setNeedsDisplay];
+}
 @end

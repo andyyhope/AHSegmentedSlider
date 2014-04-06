@@ -13,23 +13,28 @@
 @protocol AHSegmentedSliderDelegate <NSObject>
 @optional
 - (void)segmentedSlider:(AHSegmentedSlider *)segmentedSlider didSelectPointAtIndex:(NSInteger)index withGesture:(UIGestureRecognizer *)gesture;
+- (void)sliderIsAtPercent:(float)percent;
 
 @end
 
 @interface AHSegmentedSlider : UIView
 @property (nonatomic, assign) id<AHSegmentedSliderDelegate> delegate;
-@property (nonatomic, assign) float marginInset;
+@property (nonatomic, assign, readonly) NSInteger currentIndex;
 @property (nonatomic, assign) NSInteger numberOfPoints;
+@property (nonatomic, assign) float marginInset;
+
 @property (nonatomic, assign) float nodePoint;
-@property (nonatomic, assign) float lineWidth;
+@property (nonatomic, assign) float barLineWidth;
+@property (nonatomic, assign) float baseLineWidth;
+@property (nonatomic, assign) float baseNodeRadius;
+@property (nonatomic, assign) float barNodeRadius;
+
+@property (nonatomic, assign) UIColor *barColor;
+@property (nonatomic, assign) UIColor *baseColor;
+@property (nonatomic, assign) UIColor *barNodeColor;
+@property (nonatomic, assign) UIColor *baseNodeColor;
+@property (nonatomic, assign) BOOL visibleNodes;
 @property (nonatomic, assign) BOOL touchEnabled;
-@property (nonatomic, assign, readonly) int currentIndex;
-@property (nonatomic, assign) float circleRadius;
-@property (nonatomic, assign) UIColor *leftColor;
-@property (nonatomic, assign) UIColor *rightColor;
-@property (nonatomic, assign) UIColor *lineColor;
-@property (nonatomic, assign) UIColor *nodeColor;
 
 - (void)moveToIndex:(int)index;
-- (void)positionOfIndex:(int)index;
 @end
