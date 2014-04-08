@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "AHSegmentedSlider.h"
-@interface ViewController ()
+@interface ViewController () <AHSegmentedSliderDelegate>
 {
     AHSegmentedSlider *slider;
 }
@@ -20,7 +20,10 @@
 {
     [super viewDidLoad];
 	slider = [[AHSegmentedSlider alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100)];
-    [slider setNumberOfPoints:12];
+    [slider setDelegate:self];
+    [slider setMinValue:200];
+    [slider setMaxValue:4000];
+    [slider setNumberOfPoints:10];
     [slider setBaseLineWidth:4];
     [slider setBarLineWidth:6];
     [slider setBarColor:[UIColor blueColor]];
@@ -58,6 +61,12 @@
 {
     [slider moveToIndex:4];
 }
-
-
+- (void)segmentedSliderIsAtPercent:(float)percent
+{
+        NSLog(@"%f, ", percent);
+}
+- (void)segmentedSliderIsAtValue:(float)value
+{
+    NSLog(@"%f, ", value);
+}
 @end

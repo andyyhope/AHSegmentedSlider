@@ -13,7 +13,8 @@
 @protocol AHSegmentedSliderDelegate <NSObject>
 @optional
 - (void)segmentedSlider:(AHSegmentedSlider *)segmentedSlider didSelectPointAtIndex:(NSInteger)index withGesture:(UIGestureRecognizer *)gesture;
-- (void)sliderIsAtPercent:(float)percent;
+- (void)segmentedSliderIsAtPercent:(float)percent;
+- (void)segmentedSliderIsAtValue:(float)value;
 
 @end
 
@@ -22,12 +23,15 @@
 @property (nonatomic, assign, readonly) NSInteger currentIndex;
 @property (nonatomic, assign) NSInteger numberOfPoints;
 @property (nonatomic, assign) float marginInset;
+@property (nonatomic, readonly) float xDistance;
 
 @property (nonatomic, assign) float nodePoint;
 @property (nonatomic, assign) float barLineWidth;
 @property (nonatomic, assign) float baseLineWidth;
 @property (nonatomic, assign) float baseNodeRadius;
 @property (nonatomic, assign) float barNodeRadius;
+@property (nonatomic, assign) float minValue;
+@property (nonatomic, assign) float maxValue;
 
 @property (nonatomic, assign) UIColor *barColor;
 @property (nonatomic, assign) UIColor *baseColor;

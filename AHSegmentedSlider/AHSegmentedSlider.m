@@ -29,12 +29,14 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        _minValue = 0;
+        _maxValue = 100;
+        
         _thumbImageView = [[UIImageView alloc] init];
         _nodePoints = [NSMutableArray new];
         _marginInset = 0;
         _visibleNodes = NO;
         [self setNumberOfPoints:2];
-
 
         _gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         _gestureRecognizer.delegate = self;
@@ -97,8 +99,6 @@
     {
         for (int i = 0; i < _numberOfPoints; i++) {
             
-            
-            
             float newRadius;
             UIColor *newColor;
             
@@ -136,14 +136,28 @@
 {
     [UIView animateWithDuration:0.2 animations:^{
         _thumbImageView.center = CGPointMake((index * _spaceBetweenPoints) + _marginInset, _thumbImageView.center.y);
+    } completion:^(BOOL finished) {
+        [self updateValue];
+        [self updateIndex];
+        [self drawEachNode];
         [self setNeedsDisplay];
+        
     }];
 }
 
 
 
-- (void)updateSlider
+- (void)updateValue
 {
+    float xBounds = self.frame.size.width - (2 * _marginInset);
+    float percent = (_thumbImageView.center.x - _marginInset) / xBounds * 100;
+    float value = ((_maxValue - _minValue) * (percent / 100));
+    
+    
+    [_delegate respondsToSelector:@selector(segmentedSliderIsAtPercent:)];
+    [_delegate respondsToSelector:@selector(segmentedSliderIsAtValue:)];
+    [_delegate segmentedSliderIsAtPercent:percent];
+    [_delegate segmentedSliderIsAtPercent:value];
     
 }
 
@@ -174,11 +188,14 @@
     {
         [self moveSliderToXPoint:touchLocation.x];
         
+        
     } else if (gesture.state == UIGestureRecognizerStateEnded)
     {
         [self moveToNearestNode];
         
     }
+    
+    [self updateValue];
     
 }
 
@@ -191,8 +208,6 @@
         [self setNeedsDisplay];
         NSLog(@"Move slider to point");
     }
-    
-    
 }
 
 - (void)updateIndex
@@ -200,9 +215,7 @@
     int nextIndex = (int)((_thumbImageView.center.x - _marginInset) / _spaceBetweenPoints);
     if (nextIndex != _currentIndex) {
         _currentIndex = nextIndex;
-        NSLog(@"CURRENT INDEX: %i", _currentIndex);
     }
-    
     
 }
 

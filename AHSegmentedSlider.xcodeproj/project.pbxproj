@@ -466,6 +466,7 @@
 				66692D2418E923C200FB49F4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		66692D2518E923C200FB49F4 /* Build configuration list for PBXNativeTarget "AHSegmentedSliderTests" */ = {
 			isa = XCConfigurationList;
@@ -474,6 +475,7 @@
 				66692D2718E923C200FB49F4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
