@@ -29,6 +29,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor clearColor];
+        
         _minValue = 0;
         _maxValue = 100;
         
@@ -65,29 +67,29 @@
 - (void)drawRect:(CGRect)rect
 {
     
-    // Draw Baseline
+    // Draw Barline
     
-    CGContextRef barLineContext = UIGraphicsGetCurrentContext();
-    CGContextSetStrokeColorWithColor(barLineContext, _barColor.CGColor);
-    
-    // Draw them with a 2.0 stroke width so they are a bit more visible.
-    CGContextSetLineWidth(barLineContext, _baseLineWidth);
-    CGContextMoveToPoint(barLineContext ,_marginInset, (self.bounds.size.height / 2)); //start at this point
-    CGContextAddLineToPoint(barLineContext, self.frame.size.width - _marginInset, (self.bounds.size.height / 2)); //draw to this point
-    
-    // and now draw the Path!
-    CGContextStrokePath(barLineContext);
-    
-
-    // Draw Left Line
     CGContextRef baseLineContext = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(baseLineContext, _baseColor.CGColor);
     
-    CGContextSetLineWidth(baseLineContext, _barLineWidth);
+    // Draw them with a 2.0 stroke width so they are a bit more visible.
+    CGContextSetLineWidth(baseLineContext, _baseLineWidth);
     CGContextMoveToPoint(baseLineContext ,_marginInset, (self.bounds.size.height / 2)); //start at this point
-    CGContextAddLineToPoint(baseLineContext, _thumbImageView.center.x, (self.bounds.size.height / 2));
+    CGContextAddLineToPoint(baseLineContext, self.frame.size.width - _marginInset, (self.bounds.size.height / 2)); //draw to this point
     
+    // and now draw the Path!
     CGContextStrokePath(baseLineContext);
+    
+
+    // Draw Left Line
+    CGContextRef barLineContext = UIGraphicsGetCurrentContext();
+    CGContextSetStrokeColorWithColor(barLineContext, _barColor.CGColor);
+    
+    CGContextSetLineWidth(barLineContext, _barLineWidth);
+    CGContextMoveToPoint(barLineContext ,_marginInset, (self.bounds.size.height / 2)); //start at this point
+    CGContextAddLineToPoint(barLineContext, _thumbImageView.center.x, (self.bounds.size.height / 2));
+    
+    CGContextStrokePath(barLineContext);
     
     [self drawEachNode];
     
@@ -141,7 +143,6 @@
         [self updateIndex];
         [self drawEachNode];
         [self setNeedsDisplay];
-        
     }];
 }
 
@@ -250,6 +251,8 @@
     _marginInset = marginInset;
     _thumbImageView.center = CGPointMake(_marginInset, self.bounds.size.height / 2);
     
+    [self setNumberOfPoints:_numberOfPoints];
+    
     [self setNeedsDisplay];
 }
 
@@ -265,7 +268,7 @@
 
     _spaceBetweenPoints = (self.frame.size.width - (_marginInset * 2)) / (_numberOfPoints - 1);
     CGPoint centerPoint;
-    NSLog(@"%f", _spaceBetweenPoints);
+    NSLog(@"sapce between points %f", _spaceBetweenPoints);
     
     [_nodePoints removeAllObjects];
     
@@ -307,16 +310,16 @@
     [self setNeedsDisplay];
 }
 
-- (void)setBarColor:(UIColor *)leftColor
+- (void)setBarColor:(UIColor *)color
 {
-    _barColor = leftColor;
+    _barColor = color;
     
     [self setNeedsDisplay];
 }
 
-- (void)setBaseColor:(UIColor *)rightColor
+- (void)setBaseColor:(UIColor *)color
 {
-    _baseColor = rightColor;
+    _baseColor = color;
     
     [self setNeedsDisplay];
 }

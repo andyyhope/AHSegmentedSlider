@@ -23,27 +23,24 @@
     [slider setDelegate:self];
     [slider setMinValue:200];
     [slider setMaxValue:4000];
-    [slider setNumberOfPoints:10];
+    [slider setMarginInset:40];
+    [slider setNumberOfPoints:4];
     [slider setBaseLineWidth:4];
     [slider setBarLineWidth:6];
-    [slider setBarColor:[UIColor blueColor]];
-    [slider setBaseColor:[UIColor redColor]];
+    [slider setBarColor:[UIColor greenColor]];
+    [slider setBaseColor:[UIColor grayColor]];
 
-    [slider setVisibleNodes:YES];
+    [slider setVisibleNodes:NO];
     
     [slider setBaseNodeColor:[UIColor blueColor]];
     [slider setBarNodeColor:[UIColor orangeColor]];
     
     [slider setBaseNodeRadius:6];
     [slider setBarNodeRadius:10];
-     
-    
-    [slider setBackgroundColor:[UIColor darkGrayColor]];
-    [slider setMarginInset:16];
     
     [self.view addSubview:slider];
     
-    self.view.backgroundColor = [UIColor grayColor];
+    self.view.backgroundColor = [UIColor blackColor];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setFrame:CGRectMake(0, 0, 100, 100)];
